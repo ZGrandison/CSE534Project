@@ -1,4 +1,5 @@
-﻿using Riptide.Transports;
+﻿using Riptide;
+using Riptide.Transports;
 using Riptide.Transports.Tcp;
 using Riptide.Transports.Udp;
 using Riptide.Utils;
@@ -7,65 +8,64 @@ using System;
 #endif
 using UnityEngine;
 
-namespace Riptide.Demos.DedicatedServer
+public enum ServerToClientId : ushort
 {
-    public enum ServerToClientId : ushort
-    {
-        SpawnPlayer = 1,
-        PlayerMovement,
-        BulletCreate,
-        BulletUpdate,
-        BulletDestroy,
-        HealthUpdate
-    }
-    public enum ClientToServerId : ushort
-    {
-        PlayerName = 1,
-        PlayerInput,
-    }
+    SpawnPlayer = 1,
+    PlayerMovement,
+    BulletCreate,
+    BulletUpdate,
+    BulletDestroy,
+    HealthUpdate
+}
+public enum ClientToServerId : ushort
+{
+    PlayerName = 1,
+    PlayerInput,
+    BulletInput
+}
 
-    public class NetworkManager : MonoBehaviour
+public class NetworkManager : MonoBehaviour
+{
+    private static NetworkManager _singleton;
+    public static NetworkManager Singleton
     {
-        private static NetworkManager _singleton;
-        public static NetworkManager Singleton
+        get => _singleton;
+        private set
         {
-            get => _singleton;
-            private set
+            if (_singleton == null)
+                _singleton = value;
+            else if (_singleton != value)
             {
-                if (_singleton == null)
-                    _singleton = value;
-                else if (_singleton != value)
-                {
-                    Debug.Log($"{nameof(NetworkManager)} instance already exists, destroying object!");
-                    Destroy(value);
-                }
+                Debug.Log($"{nameof(NetworkManager)} instance already exists, destroying object!");
+                Destroy(value);
             }
         }
+    }
 
-        [SerializeField] private ushort port;
-        [SerializeField] private ushort maxClientCount;
-        [SerializeField] private GameObject playerPrefab;
-        [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private ushort port;
+    [SerializeField] private ushort maxClientCount;
+    [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private GameObject bulletPrefab;
 
-        public GameObject PlayerPrefab => playerPrefab;
-        public GameObject BulletPrefab => bulletPrefab;
+    public GameObject PlayerPrefab => playerPrefab;
+    public GameObject BulletPrefab => bulletPrefab;
 
-        public Server Server { get; private set; }
+    public Server Server { get; private set; }
 
-        public MessageSendMode mode;
+    public MessageSendMode mode;
 
-        private void Awake()
-        {
-            Singleton = this;
-        }
+    private void Awake()
+    {
+        Singleton = this;
+    }
 
-        private void Start()
-        {
-            QualitySettings.vSyncCount = 0;
-            Application.targetFrameRate = 30;
+    private void Start()
+    {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 30;
 
 #if UNITY_EDITOR
-            RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
+        RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
 #else
             Console.Title = "Server";
             Console.Clear();
@@ -73,39 +73,38 @@ namespace Riptide.Demos.DedicatedServer
             RiptideLogger.Initialize(Debug.Log, true);
 #endif
 
-            Server = new Server(new UdpServer(), "SERVER");
-            mode = MessageSendMode.Unreliable;
-            Server.ClientConnected += NewPlayerConnected;
-            Server.ClientDisconnected += PlayerLeft;
+        Server = new Server(new UdpServer(), "SERVER");
+        mode = MessageSendMode.Unreliable;
+        Server.ClientConnected += NewPlayerConnected;
+        Server.ClientDisconnected += PlayerLeft;
 
-            Server.Start(port, maxClientCount);
-        }
+        Server.Start(port, maxClientCount);
+    }
 
-        private void FixedUpdate()
+    private void FixedUpdate()
+    {
+        Server.Update();
+    }
+
+    private void OnApplicationQuit()
+    {
+        Server.Stop();
+
+        Server.ClientConnected -= NewPlayerConnected;
+        Server.ClientDisconnected -= PlayerLeft;
+    }
+
+    private void NewPlayerConnected(object sender, ServerConnectedEventArgs e)
+    {
+        foreach (Player player in Player.List.Values)
         {
-            Server.Update();
+            if (player.Id != e.Client.Id)
+                player.SendSpawn(e.Client.Id);
         }
+    }
 
-        private void OnApplicationQuit()
-        {
-            Server.Stop();
-
-            Server.ClientConnected -= NewPlayerConnected;
-            Server.ClientDisconnected -= PlayerLeft;
-        }
-
-        private void NewPlayerConnected(object sender, ServerConnectedEventArgs e)
-        {
-            foreach (Player player in Player.List.Values)
-            {
-                if (player.Id != e.Client.Id)
-                    player.SendSpawn(e.Client.Id);
-            }
-        }
-
-        private void PlayerLeft(object sender, ServerDisconnectedEventArgs e)
-        {
-            Destroy(Player.List[e.Client.Id].gameObject);
-        }
+    private void PlayerLeft(object sender, ServerDisconnectedEventArgs e)
+    {
+        Destroy(Player.List[e.Client.Id].gameObject);
     }
 }

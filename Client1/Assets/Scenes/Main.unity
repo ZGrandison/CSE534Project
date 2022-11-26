@@ -360,7 +360,7 @@ MonoBehaviour:
   port: 7777
   localPlayerPrefab: {fileID: 5215725332524746828, guid: 3d5151bcb5961284bb320e3ed73691f4,
     type: 3}
-  playerPrefab: {fileID: 5215725332524746828, guid: 691fcce94c07c37408edf6e5b5e9e42f,
+  playerPrefab: {fileID: 5215725332524746828, guid: 05208823265b2ae42b0149eb006f0985,
     type: 3}
   bulletPrefab: {fileID: 6860058476115884921, guid: a39904b4b28193f459acf2c6ee5b023a,
     type: 3}

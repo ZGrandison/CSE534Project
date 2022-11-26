@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1210338273666580527
+--- !u!1 &3347685308234427189
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,21 +8,21 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2965176720673952061}
+  - component: {fileID: 2816136449013811932}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: FakeCam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2965176720673952061
+--- !u!4 &2816136449013811932
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1210338273666580527}
+  m_GameObject: {fileID: 3347685308234427189}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.008, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -43,7 +43,6 @@ GameObject:
   - component: {fileID: 8583443069344764921}
   - component: {fileID: 4020330271795952152}
   - component: {fileID: 7000798143400761751}
-  - component: {fileID: 4472379020220800421}
   m_Layer: 0
   m_Name: EnemyPlayer
   m_TagString: Untagged
@@ -62,7 +61,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 2965176720673952061}
+  - {fileID: 2816136449013811932}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -129,19 +128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 0
   username: 
---- !u!114 &4472379020220800421
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5215725332524746828}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98a18c4cd41655c4c871b20635265c8b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  camTransform: {fileID: 0}
+  fakeCam: {fileID: 2816136449013811932}
 --- !u!1 &6246737370502307990
 GameObject:
   m_ObjectHideFlags: 0
@@ -264,7 +251,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 2965176720673952061}
+    m_TransformParent: {fileID: 2816136449013811932}
     m_Modifications:
     - target: {fileID: 2225486910712267856, guid: cf72ecc4d5ad5ee4ca7947ae03f06727,
         type: 3}
@@ -325,11 +312,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Weapon_Shotgun 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2225486910712267859, guid: cf72ecc4d5ad5ee4ca7947ae03f06727,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cf72ecc4d5ad5ee4ca7947ae03f06727, type: 3}
