@@ -12,7 +12,9 @@ public class Player : MonoBehaviour
     [SerializeField] private ushort id;
     [SerializeField] private string username;
     [SerializeField] private Transform fakeCam;
-    private float runningAvg = 10f;
+    private float runningJitterAvg;
+    private float lastPing = -1f;
+    public List<string> networkData = new List<string>();
 
     private int health;
 
@@ -22,6 +24,21 @@ public class Player : MonoBehaviour
 
         if (id != NetworkManager.Singleton.Client.Id) // Don't overwrite local player's forward direction to avoid noticeable rotational snapping
             transform.forward = forward;
+    }
+
+    private void Update()
+    {
+        float ping = NetworkManager.Singleton.Client.Connection.SmoothRTT;
+        if (ping > 0)
+        {
+            if (lastPing == -1)
+                runningJitterAvg = 0;
+            else
+                runningJitterAvg = (Math.Abs(ping - lastPing) + runningJitterAvg) / 2;
+            lastPing = ping;
+        }
+        networkData.Add(ping + "," + runningJitterAvg);
+        Debug.Log("Ping: " + ping + " | Jitter: " + runningJitterAvg);
     }
 
     private void Disconnect(ushort id)

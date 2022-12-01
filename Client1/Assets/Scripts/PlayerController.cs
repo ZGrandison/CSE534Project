@@ -35,8 +35,6 @@ public class PlayerController : MonoBehaviour
         {
             SendBulletShot();
         }
-
-        Debug.Log(NetworkManager.Singleton.Client.Connection.SmoothRTT);
         //gunTransform.forward = camTransform.forward;
     }
 

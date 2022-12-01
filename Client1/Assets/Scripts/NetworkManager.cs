@@ -1,9 +1,12 @@
 ﻿using Riptide;
 using Riptide.Transports.Tcp;
 using Riptide.Transports.Udp;
+using Riptide.Transports.Quic;
 using Riptide.Utils;
 using System;
 using UnityEngine;
+using System.IO;
+using System.Collections.Generic;
 
 public enum ServerToClientId : ushort
 {
@@ -80,6 +83,11 @@ public class NetworkManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
+        foreach (KeyValuePair<ushort, Player> entry in Player.list)
+        {
+            File.WriteAllLines("UDPPlayer" + entry.Key + ".txt", entry.Value.networkData);
+            // do something with entry.Value or entry.Key
+        }
         Disconnect();
     }
 

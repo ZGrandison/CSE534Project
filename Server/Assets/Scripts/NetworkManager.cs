@@ -2,6 +2,7 @@
 using Riptide.Transports;
 using Riptide.Transports.Tcp;
 using Riptide.Transports.Udp;
+using Riptide.Transports.Quic;
 using Riptide.Utils;
 #if !UNITY_EDITOR
 using System;
@@ -56,13 +57,15 @@ public class NetworkManager : MonoBehaviour
 
     private void Awake()
     {
+        QualitySettings.vSyncCount = 0;  // VSync must be disabled
+        Application.targetFrameRate = 30;
         Singleton = this;
     }
 
     private void Start()
     {
-        QualitySettings.vSyncCount = 0;
-        Application.targetFrameRate = 30;
+        //QualitySettings.vSyncCount = 0;
+        //Application.targetFrameRate = 30;
 
 #if UNITY_EDITOR
         RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
