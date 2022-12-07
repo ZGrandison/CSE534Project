@@ -58,6 +58,7 @@ namespace Riptide.Transports.Quic
 
         private bool dataReady = false;
         private byte[] quicReceiveData;
+        private IPEndPoint endpoint;
 
         /// <summary>Initializes the transport.</summary>
         /// <param name="mode">Whether to create an IPv4 only, IPv6 only, or dual-mode socket.</param>
@@ -77,7 +78,7 @@ namespace Riptide.Transports.Quic
         {
             if (dataReady)
             {
-                OnDataReceived(quicReceiveData, quicReceiveData.Length, (IPEndPoint)remoteEndPoint);
+                OnDataReceived(quicReceiveData, quicReceiveData.Length, this.endpoint);
                 dataReady = false;
                 quicReceiveData = null;
             }
@@ -115,6 +116,7 @@ namespace Riptide.Transports.Quic
         static void ClientConnected(QuicConnection connection, RiptideQuicPeer peer)
         {
             connection.OnStreamOpened += StreamOpened;
+            peer.endpoint = peer.listener.currentEndpoint();
         }
 
         // Fired when a new stream has been opened (It does not carry data with it)

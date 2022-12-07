@@ -146,5 +146,10 @@ namespace QuicNet
 
             return null;
         }
+
+        public IPEndPoint currentEndpoint()
+        {
+            return _pwt.LastTransferEndpoint();
+        }
     }
 }

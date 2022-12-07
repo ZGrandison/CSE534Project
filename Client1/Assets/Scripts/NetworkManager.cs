@@ -66,8 +66,8 @@ public class NetworkManager : MonoBehaviour
     {
         RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
 
-        Client = new Client(new UdpClient(), "SERVER");
-        mode = MessageSendMode.Unreliable;
+        Client = new Client(new TcpClient(), "SERVER");
+        mode = MessageSendMode.Reliable;
         Client.Connected += DidConnect;
         Client.ConnectionFailed += FailedToConnect;
         Client.ClientDisconnected += PlayerLeft;
